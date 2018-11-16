@@ -7,6 +7,14 @@ const bomCount = 10;
 const board = [];
 
 
+const fs = require('fs');
+const path = require('path');
+const htmlPath = path.join(__dirname, './static/index.html');
+const html =fs.readFileSync(htmlPath, 'utf8');
+// console.log(html);
+
+app.use(express.static('static'));
+
 // 0埋めの配列を作成(①)
 // for(x=0; x<height; ++x){
 //   arr = [];
@@ -73,37 +81,38 @@ app.get('/board', (req, res) => {
         board[x][y].exploded = true;
         // 爆弾を１つ減らす
         remain_bom = bomCount-1;
-        console.log("残りの爆弾："+remain_bom);   
+        console.log("残りの爆弾："+remain_bom);
         // 他のhasBomを誘爆させる
-        
-        // 1つずつ配列の中を見てhasBomがtrueならexplodedをrueに変える
-        // ２次元配列の値を取得する(１)
-
-        // hasBomにアクセスする(2)
-        // explodedにアクセスする(3)     
+        // var newarr = board.map(key => ({x:x, y:y, exploded:true}))
+        // console.log(newarr);
 
         // place = board.every(hasBom != false)
-          // place = board.findAll(obj => obj.hasBom === true)
-          // console.log("爆弾は"+place+"にありました");
-          //   // console.log("爆弾は"+ep.hasBom+"にありました")
-  
-      
+        // place = board.findAll(obj => obj.hasBom === true)
+        // console.log("爆弾は"+place+"にありました");
+        //   // console.log("爆弾は"+ep.hasBom+"にありました")
+ 
     };
     res.json(board);
     console.log(board);
   }
 });
 
-function Explode_bom(pre,cur){
-    if (cur[0].hasBom == true){
-        console.log(String(cur[0].x) + String(cur[0].y)+'で爆弾発見');
-    }else{
-        nextArray = cur;
-      }
-  };
 
-result = board.reduce(Explode_bom,0)
-
-
+// 誘爆に関するテスト(後で実装)
+// function Explode_bom(pre,cur){
+//     if (cur[0].hasBom == true){
+//         console.log(String(cur[0].x) + String(cur[0].y)+'で爆弾発見');
+//     }else{
+//         nextArray = cur;
+//       }
+//   };
+// result = board.reduce(Explode_bom,0)
+// test = [
+//   [{x: 0, y: 0, hasBom: false, opened: false, exploded: false}],
+//   [{x: 1, y: 1, hasBom: false, opened: false, exploded: false}],
+//   [{x: 2, y: 2, hasBom: false, opened: false, exploded: false}]
+// ];
+// var newarr = test.map(key => ({x:x, y:y, exploded:true}))
+// // console.log(newarr);
 
 app.listen(8000);
