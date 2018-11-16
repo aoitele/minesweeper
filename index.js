@@ -4,8 +4,20 @@ const width = 10;
 const height = 10;
 let count = 0;
 const bomCount = 10;
+let remain_bom;
 const board = [];
+const user = "trump";
 
+const directions =[
+    [-1,-1],
+    [-1,0],
+    [-1,2],
+    [0,-1],
+    [0,2],
+    [1,-1],
+    [1,0],
+    [1,1]
+  ];
 
 const fs = require('fs');
 const path = require('path');
@@ -54,9 +66,6 @@ while (count < bomCount) {
   }
 }
 
-console.log("爆弾設置の結果↓↓↓");
-console.log(board);
-
 app.get('/', (req, res) => {
 // 爆弾のある位置を返さないように要素を削除する
   update_arr = board;
@@ -75,44 +84,85 @@ app.get('/board', (req, res) => {
   y = query.y;
   // リクエストされた場所がクローズならオープンにする
   if(x|y != null){
-    board[x][y].opened = true;
+      point = board[x][y];
+      point.opened = true;
+      // 開けたユーザー名を付与する
+      point["user"]= user;
+
+      // 周囲の爆弾をカウントする
+      number = 0;
+      for(i=0; i<directions.length; ++i){
+          // direction配列から数値を取得する
+          search_x = directions[i][0];
+          search_y = directions[i][1];
+
+          cur_x = parseInt(x)+parseInt(search_x);
+          cur_y = parseInt(y)+parseInt(search_y);
+
+          if(cur_x >= 0 && cur_y >= 0 && cur_x <= 9 && cur_y <= 9){
+              // 周囲8マスを計算、hasBomのtrueを探す
+              aroundBom = board[cur_x][cur_y];
+              console.log(JSON.stringify(aroundBom)+'を探してます・・・');
+              count = aroundBom.hasBom
+                if(count==true){
+                  console.log(JSON.stringify(aroundBom)+'で爆弾を見つけました');
+                }
+          // numberにtrueの数をカウントアップ
+          number += count;
+          }
+      }
+      console.dir(number+'個の爆弾が見つかりました！');
+      point["number"] = number;
+      console.log(point);
+
       // オープンにした場所に爆弾があればexplodedをtrueにする
       if(board[x][y].hasBom != false){
         board[x][y].exploded = true;
-        // 爆弾を１つ減らす
-        remain_bom = bomCount-1;
-        console.log("残りの爆弾："+remain_bom);
+        
+        remain_bom = 9;
         // 他のhasBomを誘爆させる
-        // var newarr = board.map(key => ({x:x, y:y, exploded:true}))
-        // console.log(newarr);
-
-        // place = board.every(hasBom != false)
-        // place = board.findAll(obj => obj.hasBom === true)
-        // console.log("爆弾は"+place+"にありました");
-        //   // console.log("爆弾は"+ep.hasBom+"にありました")
- 
-    };
-    res.json(board);
-    console.log(board);
+        while(remain_bom>0){
+          for(i=0; i<10; ++i){
+            for(k=0; k<10; ++k){
+              console.log(board[i][k]);
+              if(board[i][k].hasBom!=false){
+                board[i][k].exploded=true;
+                remain_bom--;
+                console.log('残りの爆弾:'+remain_bom);
+              }
+            }
+          }
+        };
+      }
+      res.json(board);
+      // console.log(board);
   }
+  else
+    console.log("xとyを入れてください");
 });
 
 
-// 誘爆に関するテスト(後で実装)
-// function Explode_bom(pre,cur){
-//     if (cur[0].hasBom == true){
-//         console.log(String(cur[0].x) + String(cur[0].y)+'で爆弾発見');
-//     }else{
-//         nextArray = cur;
-//       }
-//   };
-// result = board.reduce(Explode_bom,0)
-// test = [
-//   [{x: 0, y: 0, hasBom: false, opened: false, exploded: false}],
-//   [{x: 1, y: 1, hasBom: false, opened: false, exploded: false}],
-//   [{x: 2, y: 2, hasBom: false, opened: false, exploded: false}]
-// ];
-// var newarr = test.map(key => ({x:x, y:y, exploded:true}))
-// // console.log(newarr);
 
 app.listen(8000);
+
+// ⑦の処理 xに値がある時のみ処理を行う(サーバー側との送受信ができない時)
+// if(req.query.x){
+//   res.json
+// }
+
+/* <style>
+#app{
+    position:fixed,
+    top:50%;
+    left:50%;
+    transform: transrate(-50%, -50%);
+  }
+
+.block{
+  float:left;
+  width: 20px;
+  height: 20px;
+  border: 1px solid; #333;
+  background-color: #ddd;
+}
+</style> */

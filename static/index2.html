@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+        <div id="app">
+        <!-- 目標の生成物 -->
+        <!-- <row> <block></block><block></block> </row>` -->
+
+        </div>
+        <style>
+        </style>
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script>
+// DOMを破棄して再構築
+
+const render = (board) =>{
+$("#app").empty();
+let html='';
+board.forEach(row => {
+  html += `<div class="row">`
+    row.forEach(block) =>{
+      html += `<div class="block"${block.opend? ' opened': ''}">      />`
+      }
+  html += `</div>`;
+});
+
+$("#app").html(html);
+
+$('.block').click(function(){
+  xとyを算出する
+})
+
+        </script>
+    </body>
+</html>
