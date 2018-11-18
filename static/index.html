@@ -1,43 +1,92 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-    </head>
-    <body>
-        <div id="app"></div>
-        <style>
-        </style>
-        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-        <script>
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+  </head>
 
-        const render = (board) =>{
-          // DOMを破棄して再構築
-          $('#app').empty(); 
-          let html ='';
-          board.forEach(row => {
-            html += `<div class="row">`
-              row.forEach(block => {
-                html += `<div class="block"/>`
-              },
+  <style>
+    #app{
+        position:fixed;
+        top:50%;
+        left:50%;
+        transform: transrate(-50%, -50%);
+    };  
+        
+    
+    .block{
+        float:left;
+        width: 20px;
+        height: 20px;
+        border: 1px solid #333;
+        background-color: #ddd;
+    } 
+    </style>
+
+
+<body>
+<div id="app"></div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+
+const usercheck= localStorage.getItem("user");
+    if(usercheck == null){
+      console.log("ユーザー登録を行なってください");
+      // モーダルの実装
+      // $("body").append(`
+      //   <div id="modal-overlay"></div>
+      //   `
+      // );
+      // $("#modal-overlay").fadeIn("slow");
+      $('#app').append(`
+         <div id="modal-content">
+            <form id="username">
+              <input id="name" type="text" name="name" placeholder="Enter your name">
+              <input id=send type="button" name="send" value="登録">
+            </form>
+          </div>
+      `
+      );
+      $('#send').on("click",function(){
+        var name = $('#name').val();
+        localStorage.setItem('user',name);
+        console.log(name+'を登録しました');
+        $('#name').val();
+      });
+    };
+    
+const render = (board) =>{
+    // DOMを破棄して再構築
+    $('#app').empty();
+    var html ='';
+    board.forEach(row => {
+        html += `<div class="row">`
+        row.forEach(block=>{
+            html += `<div class="block"/>`
+            },
             html += `</div>`
-              )};
-        };
+        );
+    });
+};
 
-        setInterval(() => {
-      // 0.5秒ごとにサーバーにポーリング
-        $.getJSON('/board', render);
-          }, 500);
+setInterval(() => {
+  // 0.5秒ごとにサーバーにポーリング
+  $.getJSON('/board', render);
+  }, 500);
+console.dir(render);
 
-        $('.block').click(function() {
-          // xとyを算出する
-          $.getJSON('/board', {
-            x: x,
-            y: y,
-            user: user,
-          }, render);
-        });
+$('.block').click(function() {
+  // xとyを算出する
+  $.getJSON('/board', {
+  x: x,
+  y: y,
+  user: user,
+  }, render);
+});
 
-
-        </script>
-    </body>
+</script>
+</body>
 </html>
+
+
