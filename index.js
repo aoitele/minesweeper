@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+app.use(express.static('static'));
 const width = 10;
 const height = 10;
 let count = 0;
@@ -20,10 +21,7 @@ const directions =[
 const fs = require('fs');
 const path = require('path');
 const htmlPath = path.join(__dirname, './static/index.html');
-const html =fs.readFileSync(htmlPath, 'utf8');
-// console.log(html);
-app.use(express.static('static'));
-
+innerhtml =fs.readFileSync(htmlPath, 'utf8');
 
 // 0埋めの配列を作成(①)
 // for(x=0; x<height; ++x){
@@ -66,7 +64,6 @@ while (count < bomCount) {
 
 app.get('/', (req, res) => {
 // 爆弾のある位置を返さないように要素を削除する
-  update_arr = board;
   for(x=0; x<height; ++x){
     for(y=0; y<width; ++y){
       delete update_arr[x][y].hasBom;
@@ -80,6 +77,7 @@ app.get('/', (req, res) => {
 app.get('/board', (req, res) => {
   // xに値がある時のみ処理を行う(サーバー側との送受信ができない時)
   // if(req.query.x){
+    console.log(board);
     query = req.query;
     x = query.x;
     y = query.y;
@@ -135,12 +133,12 @@ app.get('/board', (req, res) => {
               }
             };
           }
-      };
       res.json(board);
-      // }
-      // else
-      //   console.log("xとyを入れてください");
-    // };
+    }else{
+        console.log("通信中・・・");
+        res.json(board);
+    };
 });
+// console.log(board);
 
 app.listen(8000);

@@ -2,25 +2,24 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="style.css">
+    <!-- <link rel="stylesheet" href="style.css"> -->
   </head>
 
   <style>
-    #app{
+    /* #app{
         position:fixed;
         top:50%;
         left:50%;
         transform: transrate(-50%, -50%);
-    };  
-        
-    
-    .block{
+    };   */
+  
+    /* .block{
         float:left;
         width: 20px;
         height: 20px;
         border: 1px solid #333;
         background-color: #ddd;
-    } 
+    }; */
     </style>
 
 
@@ -29,7 +28,6 @@
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script>
-
 const usercheck= localStorage.getItem("user");
     if(usercheck == null){
       console.log("ユーザー登録を行なってください");
@@ -40,6 +38,7 @@ const usercheck= localStorage.getItem("user");
       // );
       // $("#modal-overlay").fadeIn("slow");
       $('#app').append(`
+        <p>ユーザー登録を行なってください</p> 
          <div id="modal-content">
             <form id="username">
               <input id="name" type="text" name="name" placeholder="Enter your name">
@@ -52,29 +51,29 @@ const usercheck= localStorage.getItem("user");
         var name = $('#name').val();
         localStorage.setItem('user',name);
         console.log(name+'を登録しました');
-        $('#name').val();
-      });
+        $('#name').val("");
+        // location.reload();
+      })
+    }else{
+        const render = (board) =>{
+            // DOMを破棄して再構築
+            $('#app').empty();
+            let html ="";
+            board.forEach(row => {
+                html += `<div class="row">`
+                    row.forEach(column =>{
+                        html += `<div class="block"/>`
+                    }),
+                html += `</div>`
+            });
+       
+        $('#app').append(JSON.stringify(html));
+      };
+         setInterval(() => {
+      // 0.5秒ごとにサーバーにポーリング
+      $.getJSON('/board', render);
+      },500);
     };
-    
-const render = (board) =>{
-    // DOMを破棄して再構築
-    $('#app').empty();
-    var html ='';
-    board.forEach(row => {
-        html += `<div class="row">`
-        row.forEach(block=>{
-            html += `<div class="block"/>`
-            },
-            html += `</div>`
-        );
-    });
-};
-
-setInterval(() => {
-  // 0.5秒ごとにサーバーにポーリング
-  $.getJSON('/board', render);
-  }, 500);
-console.dir(render);
 
 $('.block').click(function() {
   // xとyを算出する
