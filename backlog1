@@ -81,7 +81,8 @@ app.get('/board', (req, res) => {
     query = req.query;
     x = query.hoge;
     y = query.fuga;    
-
+    console.log(x);
+    console.log(y);
     user = query.user;
     user = user;
       // リクエストされた場所がクローズならオープンにする
