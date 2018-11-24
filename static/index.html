@@ -32,9 +32,11 @@
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script>
+
+var row;
+var column;
 const user= localStorage.getItem("user");
     if(user == null){
-      console.log("ユーザー登録を行なってください");
       // モーダルの実装
       // $("body").append(`
       //   <div id="modal-overlay"></div>
@@ -66,7 +68,7 @@ const render = (board) =>{
     let html ="";
       board.forEach(row => {
           html += `<div class="row">`
-              row.forEach(column =>{
+              row.forEach(block =>{
                   html += `<div class="block">`
                   html += `</div>`
               }),
@@ -81,76 +83,36 @@ const render = (board) =>{
   $.getJSON('/board', render);
 // },500);
 
-function open(e){
-  console.log("開きました");
+async function getPoint(){
+    // クリックしたrowのインデックスを取得する   
+    $(document).on("click", ".row", function(){
+        row = $('.row').index(this);
+        console.log(row+"行");
+        return row
+    });
+    // クリックしたblockのインデックスを取得する   
+    $(document).on("click", ".block", function(){
+        y = $('.block').index(this);
+        column = y/10; //列は10で割った余りで算出
+        column = Math.round((column - parseInt(column)) * 10); 
+        console.log(column+"列");
+        return column
+      });
+};
 
-  // var rowindex = $(e.currentTarget).index(items);
-  // console.log(rowindex);
-  // var navItems = document.querySelectorAll(".row");
-  //   for (i = 0; i < navItems.length; i++) {
-  //       // navItems[i].addEventListener("click", navButtonClick.bind(null, i));
-  //       console.log(i);
-  //   }
+getPoint()
 
+function record(row, column){
+  console.log(row);
+  console.log(column);
+};
 
-}
-
-$(document).on("click", ".block",function(){
-  // xとyを算出する
-  addEventListener('click', open, false); //開きます
-    // DOMから要素を取得する(HTMLコレクション形式)
-    let row = document.getElementsByClassName('row');
-    let block = document.getElementsByClassName('block');
-
-    // 配列に変換する
-    rows = Array.from(update_board);
-    console.log(rows);
-
-    // 要素へのアクセスを定義
-   
-    // console.log(x);
-    // y = x.div.block;
-
-    // クリックしたrowのインデックスを取得する
-    for(i=0; i<rows.length; i++){
-        rows[i].onclick = (function(x){
-          return function(){console.log("x:"+x);};
-        })(i);
-      }
-    // クリックしたblockのインデックスを取得する
-    // for(k=0; k<rows.length; i++){
-    //     rows[k].onclick = (function(y){
-    //       return function(){console.log("y:"+y);};
-    //     })(k);
-    //   };    
-        
-        // for(k=0; k<rows.length; k++){
-        // rows[i].onclick = (function(x){
-        //   return function(){console.log(x);};
-        // })(i);
-      // }
-
-    // console.log("ひらきます");
-  });
-
- 
-
-    // var search_x = rows.indexOf(target);
-    // var search_y = rows.indexOf(search_x.block);
-    // console.log(search_x);
-    // x = $('.row').index(row);
-    // y = $('.block').index(row);
-    // console.log(x+"/"+y);
-
-    // xとyに代入
-
-
-  // $.getJSON('/board', {
-  // hoge: x,
-  // fuga: y,
-  // user: user
-  // }, render);
-
+  // xとyに代入
+  $.getJSON('/board', {
+  x: row,
+  y: column,
+  user: user
+  }, render);
 
 </script>
 </body>
