@@ -6,11 +6,11 @@
     <style>
       #app{
           position:fixed;
-          top:30%;
-          left:30%;
+          top:5%;
+          left:5%;
           transform: transrate(-50%, -50%);
-      };  
-      
+      };
+     
       .row{
         width: 30px;
         height: 30px;
@@ -21,28 +21,25 @@
           float:left;
           width: 20px;
           height: 20px;
-          border: 1px solid #333;
-          background-color: #a0522d;
+          padding: 1px;
+          border: 1px solid grey;
+          background-color: rgb(219, 215, 215);
       };
       </style>
  </head>
 
 <body>
-<div id="app"></div>
+<div id="app">盤面</div>
+<div id="user">player:</div>
+
+
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script>
 
-var row;
-var column;
-const user= localStorage.getItem("user");
+// アクセス時：ユーザー登録の有無を確認する
+const user = localStorage.getItem("user");
     if(user == null){
-      // モーダルの実装
-      // $("body").append(`
-      //   <div id="modal-overlay"></div>
-      //   `
-      // );
-      // $("#modal-overlay").fadeIn("slow");
       $('#app').append(`
         <p>ユーザー登録を行なってください</p> 
          <div id="modal-content">
@@ -54,68 +51,109 @@ const user= localStorage.getItem("user");
       `
       );
       $('#send').on("click",function(){
-        var name = $('#name').val();
+        let name = $('#name').val();
         localStorage.setItem("user", name);
         console.log(name+'を登録しました');
         $('#name').val("");
         location.reload();
-      })
+      });
+    }else {
+      gamePlaying();
     };
-    
+
+let width;
+
 const render = (board) =>{
     // DOMを破棄して再構築
     $('#app').empty();
     let html ="";
+    let count =0; //ブロックカウント用の変数
+    rows =0; //列カウント用の変数
       board.forEach(row => {
           html += `<div class="row">`
               row.forEach(block =>{
-                  html += `<div class="block">`
-                  html += `</div>`
+                  html += `<a class="block">`
+                  html += `</a>`
+                  count++;
               }),
           html += `</div>`
       });
     $('#app').append(html);
-    // console.log(html)
+    rows = Math.sqrt(count); //盤面の列数(および行数)を算出
+    console.log(rows+"列ある盤面です");
 };
 
-// setInterval(() => {
-  // 0.5秒ごとにサーバーにポーリング
-  $.getJSON('/board', render);
-// },500);
 
-async function getPoint(){
+
+function gamePlaying(){
+    setInterval(() => {
+        $.getJSON('/board', render);
+    },500);
+};
+
+// ゲームリセット
+function gameReset(){
+  $('#reset').on('click', function(){
+  });
+};
+
+point=[];
+
+function getPoint(){
     // クリックしたrowのインデックスを取得する   
-    $(document).on("click", ".row", function(){
-        row = $('.row').index(this);
-        console.log(row+"行");
-        return row
-    });
+    // $(document).on("click", ".row", function(){
+    //     // row = $('.row').index(this);
+    //     // console.log(row+"行");
+    //     // point.push({"x":row});
+    // });
+    
     // クリックしたblockのインデックスを取得する   
     $(document).on("click", ".block", function(){
-        y = $('.block').index(this);
-        column = y/10; //列は10で割った余りで算出
-        column = Math.round((column - parseInt(column)) * 10); 
-        console.log(column+"列");
-        return column
+        num = $('.block').index(this);
+        console.log(num+"をクリックしました");
+
+        // 行数を取得する  
+            if(num>9){
+              row = String(num).slice(0,-1) 
+              row = Number(row);
+              console.log(row+"行です");
+            }else row=0;
+            column = num/10; //列は10で割った余りで算出
+            column = Math.round((column - parseInt(column)) * 10); 
+            console.log(column+"列です");
+            // 配列に保存
+            point.push({"x":row, "y":column});
       });
-};
+    };
 
-getPoint()
-
-function record(row, column){
-  console.log(row);
-  console.log(column);
-};
-
-  // xとyに代入
+function Send_board(width){
+  // rowとcolumnを代入
   $.getJSON('/board', {
   x: row,
   y: column,
   user: user
   }, render);
+};
+
+getPoint();
 
 </script>
 </body>
+
+<style>
+.block:hover {/*ブロックを選択するとき*/
+    background-color: antiquewhite;
+};
+</style>
+<style>
+.block:active {/*ブロックを押したとき*/
+    -ms-transform: translateY(1px);
+    -webkit-transform: translateY(1px);
+    transform: translateY(1px);
+    border-bottom: none;
+};
+</style>
+
 </html>
 
 

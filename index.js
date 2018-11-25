@@ -1,8 +1,8 @@
 const express = require('express');
 const app = express();
 app.use(express.static('static'));
-const width = 10;
-const height = 10;
+const width = 30;
+const height = 30;
 let count = 0;
 const bomCount = 10;
 let remain_bom;
@@ -79,9 +79,7 @@ app.get('/board', (req, res) => {
   // if(req.query.x){
   // if(req.hoge){
     query = req.query;
-    x = query.hoge;
-    y = query.fuga;    
-
+  
     user = query.user;
     user = user;
       // リクエストされた場所がクローズならオープンにする
@@ -99,12 +97,7 @@ app.get('/board', (req, res) => {
 
               cur_x = parseInt(x)+parseInt(search_x);
               cur_y = parseInt(y)+parseInt(search_y);
-              
-              // console.dir(search_x);
-              // console.dir(search_y);
-              // console.dir(cur_x);
-              // console.dir(cur_y);
-
+            
               if(cur_x >= 0 && cur_y >= 0 && cur_x <= 9 && cur_y <= 9){
                   // 周囲8マスを計算、hasBomのtrueを探す
                   aroundBom = board[cur_x][cur_y];
@@ -117,7 +110,7 @@ app.get('/board', (req, res) => {
               number += count;
               }
           }
-          console.dir(number+'個の爆弾が見つかりました！');
+          // console.dir(number+'個の爆弾が見つかりました！');
           point["number"] = number;
           // console.log(point);
 
@@ -130,11 +123,9 @@ app.get('/board', (req, res) => {
             while(remain_bom>0){
               for(i=0; i<10; ++i){
                 for(k=0; k<10; ++k){
-                  // console.log(board[i][k]);
                   if(board[i][k].hasBom!=false){
                     board[i][k].exploded=true;
                     remain_bom--;
-                    // console.log('残りの爆弾:'+remain_bom);
                   }
                 }
               }
