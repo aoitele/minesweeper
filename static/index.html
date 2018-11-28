@@ -38,9 +38,8 @@
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script>
 
-// 変数
-let rows=0; //盤面の列数
-
+// 盤面の列数(初期値)
+let rows=0;
 
 // アクセス時：ユーザー登録の有無を確認する
 const user = localStorage.getItem("user");
@@ -111,21 +110,13 @@ function getPoint(){
       return new Promise((resolve) => {
           console.log("クリックしました");
           const num = $('.block').index(this);
-          
           // 縦と横のポジションを算出する
           row = Math.floor(num/rows) //行数
           column = Math.round(num - rows*row) //列数
           console.log(row+"行/"+column+"列を開きました");
           // 配列に保存
           point.push({"x":row, "y":column});
-          // console.log(point);
           Send_board();
-          // let i = 0;
-          // const countUp = setInterval(function(){
-          //     console.log(i++);
-          //     if(i>3)
-          //     clearInterval(countUp);
-          // },1000);
         });
     });
 }
@@ -134,11 +125,10 @@ getPoint();
 
 // /boardに座標を送る
 function Send_board(){
-  // 最後にクリックした座標
-  lastClick= point[point.length -1];
+  lastClick= point[point.length -1]; // 最後にクリックした座標
   row = lastClick.x
   column = lastClick.y
-  // rowとcolumnを代入
+  // row/column/userを代入
   $.getJSON('/board', {
   x: row,
   y: column,

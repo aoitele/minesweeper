@@ -23,17 +23,7 @@ const path = require('path');
 const htmlPath = path.join(__dirname, './static/index.html');
 innerhtml =fs.readFileSync(htmlPath, 'utf8');
 
-// 0埋めの配列を作成(①)
-// for(x=0; x<height; ++x){
-//   arr = [];
-//   for(y=0; y<width; ++y){
-//     arr.push(0);
-//   }
-// board.push(arr);
-// };
-// console.log(board);
-
-// 連想配列を作成(②)
+// 連想配列を作成
 for(x=0; x<height; ++x){
   arr = [];
   for(y=0; y<width; ++y){
@@ -80,7 +70,7 @@ app.get('/board', (req, res) => {
     y = req.query.y
       // リクエストされた場所がクローズならオープンにする
       if(x|y != null){
-          console.log("データを受け取ったよ!");
+          console.log(x+"行/"+y+"列を受け取ったよ!");
           point = board[x][y];
           point.opened = true;
           // point["user"]= user;
@@ -114,7 +104,8 @@ app.get('/board', (req, res) => {
           // オープンにした場所に爆弾があればexplodedをtrueにする
           if(board[x][y].hasBom != false){
             board[x][y].exploded = true;
-            
+            console.log("ばくはつ！！");
+
             remain_bom = 9;
             // 他のhasBomを誘爆させる
             while(remain_bom>0){
