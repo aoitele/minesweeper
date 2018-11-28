@@ -78,8 +78,8 @@ app.get('/board', (req, res) => {
   // xに値がある時のみ処理を行う(サーバー側との送受信ができない時)
   // if(req.query.x){
   // if(req.hoge){
+  console.log(req);
     query = req.query;
-  
     user = query.user;
     user = user;
       // リクエストされた場所がクローズならオープンにする
