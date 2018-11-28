@@ -35,8 +35,6 @@
   <button>reset</button>
 </div>
 
-
-
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script>
 
@@ -87,8 +85,6 @@ const render = (board) =>{
       });
     $('#app').append(html);
     rows = Math.sqrt(count); //盤面の列数(および行数)を算出
-    // console.log(rows+"列ある盤面です");
-    // console.log("Playing...");
 };
 
 // ゲーム進行中(0.5秒ごとに盤面を更新していく)
@@ -106,10 +102,11 @@ function gameReset(){
   });
 };
 
+// 開いた座標を入れる配列
 point=[];
 
-// 以下、テストスクリプト
-function waitOpen(){
+// 盤面オープン
+function getPoint(){
   $(document).on("click", ".block", function(){
       return new Promise((resolve) => {
           console.log("クリックしました");
@@ -121,9 +118,9 @@ function waitOpen(){
           console.log(row+"行/"+column+"列を開きました");
           // 配列に保存
           point.push({"x":row, "y":column});
-          console.log(point)
-
-          let i = 0;
+          // console.log(point);
+          Send_board();
+          // let i = 0;
           // const countUp = setInterval(function(){
           //     console.log(i++);
           //     if(i>3)
@@ -132,34 +129,23 @@ function waitOpen(){
         });
     });
 }
-waitOpen();
+getPoint();
 
-// 盤面オープン
-function getPoint(rows){
-    // クリックしたblockのインデックスを取得する   
-    $(document).on("click", ".block", function(){
-          console.log('クリックしました')
-          num = $('.block').index(this);
-          // 縦と横のポジションを算出する
-          row = Math.floor(num/rows) //行数
-          column = Math.round(num - rows*row) //列数
-          console.log(row+"行/"+column+"列を開きました");
-          // 配列に保存
-          point.push({"x":row, "y":column});
-          console.log(point)
-    });
-};
 
-function Send_board(width){
+// /boardに座標を送る
+function Send_board(){
+  // 最後にクリックした座標
+  lastClick= point[point.length -1];
+  row = lastClick.x
+  column = lastClick.y
   // rowとcolumnを代入
   $.getJSON('/board', {
   x: row,
   y: column,
   user: user
   }, render);
+  console.log("データを送りました");
 };
-
-
 
 </script>
 </body>

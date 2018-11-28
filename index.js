@@ -75,15 +75,12 @@ app.get('/', (req, res) => {
 
 
 app.get('/board', (req, res) => {
-  // xに値がある時のみ処理を行う(サーバー側との送受信ができない時)
-  // if(req.query.x){
-  // if(req.hoge){
-  console.log(req);
-    query = req.query;
-    user = query.user;
-    user = user;
+    // reqのxとyに値がある時のみ処理を行う
+    x = req.query.x
+    y = req.query.y
       // リクエストされた場所がクローズならオープンにする
       if(x|y != null){
+          console.log("データを受け取ったよ!");
           point = board[x][y];
           point.opened = true;
           // point["user"]= user;
@@ -133,8 +130,8 @@ app.get('/board', (req, res) => {
           }
       res.json(board);
     }else{
-        console.log("通信中・・・");
-        res.json(board);
+      // console.log("通信中...");
+      res.json(board);
     };
   // };
 });
