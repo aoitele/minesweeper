@@ -11,20 +11,20 @@
           transform: transrate(-50%, -50%);
       };
      
-      .row{
+      .row a{
         width: 30px;
         height: 30px;
-        background-color: aqua;
       }
 
       .block{
           float:left;
-          width: 20px;
-          height: 20px;
+          width: 30px;
+          height: 30px;
           padding: 1px;
           border: 1px solid grey;
           background-color: rgb(219, 215, 215);
       };
+
       </style>
  </head>
 
@@ -74,9 +74,18 @@ const render = (board) =>{
     let count =0; //ブロックカウント用の変数
     rows =0; //列カウント用の変数
       board.forEach(row => {
+          // console.log(board);
           html += `<div class="row">`
               row.forEach(block =>{
+                  number = "selected-"+block.number
+                  if(block.exploded==true){
+                      html += `<a class=img_bom>`
+                      }
+                  else if(block.opened==true){
+                       html += `<a class=${number}>`
+                    } else {
                   html += `<a class="block">`
+                  }
                   html += `</a>`
                   count++;
               }),
@@ -90,7 +99,7 @@ const render = (board) =>{
 async function gamePlaying(){
       await setInterval(() => {
           $.getJSON('/board', render);
-      },1000);
+      },5000);
 };
 
 // ゲームリセット時
@@ -107,25 +116,29 @@ point=[];
 // 盤面オープン
 function getPoint(){
   $(document).on("click", ".block", function(){
-      return new Promise((resolve) => {
+      // return new Promise((resolve) => {
           console.log("クリックしました");
-          const num = $('.block').index(this);
+          const num = $('a').index(this);
+          console.log("取得インデックス:"+num)
           // 縦と横のポジションを算出する
           row = Math.floor(num/rows) //行数
           column = Math.round(num - rows*row) //列数
           console.log(row+"行/"+column+"列を開きました");
           // 配列に保存
           point.push({"x":row, "y":column});
-          Send_board();
-        });
+
+          // 開いた場所(selected)のcssを追加する
+          $(this).addClass('testclass');
+
+          Send_board(); 
     });
 }
 getPoint();
 
-
 // /boardに座標を送る
 function Send_board(){
-  lastClick= point[point.length -1]; // 最後にクリックした座標
+  // console.log(point)
+  lastClick= point[point.length-1]; // 最後にクリックした座標
   row = lastClick.x
   column = lastClick.y
   // row/column/userを代入
@@ -145,15 +158,71 @@ function Send_board(){
     background-color: antiquewhite;
 };
 </style>
+
 <style>
-.block:active {/*ブロックを押したとき*/
-    -ms-transform: translateY(1px);
-    -webkit-transform: translateY(1px);
-    transform: translateY(1px);
-    border-bottom: none;
-};
+.selected-0,.selected-1, .selected-2, .selected-3,
+.selected-4, .selected-5, .selected-6, .selected-7,
+.selected-8, .selected-q, .img_frag,.img_bom,
+.face_smile, .face_grass, .face_bad{
+    float:left;
+    width: 30px;
+    height: 30px;
+    padding: 1px;
+    border: 1px solid grey;
+    background:url('minesweeper.png');
+}
+
+.selected-0{
+    background:none;
+    background-color:lightgreen;
+}
+
+.selected-1{
+    background-position: 0 0;
+}
+
+.selected-2{
+    background-position: -30px 0;
+}
+.selected-3{
+  background-position: -60px 0;
+}
+.selected-4{
+  background-position: -90px 0;
+}
+.selected-5{
+  background-position: -120px 0;
+}
+.selected-6{
+  background-position: -150px 0;
+}
+.selected-7{
+  background-position: -180px 0;
+}
+.selected-8{
+  background-position: -210px 0;
+}
+.selected-q{
+  background-position: -240px 0;
+}
+.img_frag{
+  background-position: -270px 0;
+}
+.img_bom{
+  background-position: -300px 0;
+}
+.face_smile{
+  background-position: -330px 0;
+}
+.face_grass{
+  background-position: -360px 0;
+}
+.face_bad{
+  background-position: -390px 0;
+}
+  
+
+
 </style>
 
 </html>
-
-

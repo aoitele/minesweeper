@@ -1,8 +1,8 @@
 const express = require('express');
 const app = express();
 app.use(express.static('static'));
-const width = 30;
-const height = 30;
+const width = 10;
+const height = 10;
 let count = 0;
 const bomCount = 10;
 let remain_bom;
@@ -10,9 +10,9 @@ const board = [];
 const directions =[
     [-1,-1],
     [-1,0],
-    [-1,2],
+    [-1,1],
     [0,-1],
-    [0,2],
+    [0,1],
     [1,-1],
     [1,0],
     [1,1]
@@ -65,6 +65,8 @@ app.get('/', (req, res) => {
 
 
 app.get('/board', (req, res) => {
+    // console.log(board);
+
     // reqのxとyに値がある時のみ処理を行う
     x = req.query.x
     y = req.query.y
